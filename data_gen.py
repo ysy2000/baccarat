@@ -16,7 +16,7 @@ cut_card = 'cutting card'
 
 num_game = 1
 
-total_cartds = num_dec * num_cards_in_one_dec
+total_cartds = num_dec * num_cards_in_one_dec   # 8 * 52 = 416
 result = []
 
 # generate list
@@ -52,20 +52,26 @@ def compare(player, banker):
         return 'tie'
 
 def get_the_card(suffled_cards, i):
-    val = int(suffled_cards[i].split("_")[0])
-    if val == cut_card:
+    try:
+        val = int(suffled_cards[i].split("_")[0])
+    except:
+        print(i)
+        ## why twice?
+        print("The cut card has been scanned. Shoe will be changed after finishing this game.")
         val = int(suffled_cards[i+1].split("_")[0])
-        print("The cut card has been scanned. I will change shoes after finishing this game.")
         i += 1
+        global cut_card 
+        cut_card = 'used cutting card'
+
     i += 1
 
     return val, i
 
 # play game
-def play_game(ready_cards):
+def play_game(suffled_cards):
 
     # burn cards procedure
-    suffled_cards = burn_procedure(ready_cards)
+    suffled_cards = burn_procedure(suffled_cards)
 
     # value
     results = []
@@ -73,7 +79,7 @@ def play_game(ready_cards):
     # draw the cards   
     i = 0
 
-    while i < total_cartds + 1:
+    while i < total_cartds + 1 and cut_card == 'cutting card':
         a, i = get_the_card(suffled_cards, i)
         b, i = get_the_card(suffled_cards, i)
         c, i = get_the_card(suffled_cards, i)
@@ -84,11 +90,11 @@ def play_game(ready_cards):
 
         if player >= 8 or banker >= 8:
             results.append(compare(player, banker))
-            break
+            continue
 
         elif player > 5 and banker >  5:
             results.append(compare(player, banker))
-            break
+            continue
         
         elif player <= 5:
             p_extra, i = get_the_card(suffled_cards, i)
@@ -98,16 +104,16 @@ def play_game(ready_cards):
                 b_extra, i = get_the_card(suffled_cards, i)
                 banker = (banker + b_extra) % 10
                 results.append(compare(player, banker))
-                break
+                continue
             
             elif banker == 3:
                 if p_extra == 8:
                     b_extra, i = get_the_card(suffled_cards, i)
                     banker = (banker + b_extra) % 10
                     results.append(compare(player,banker))
-                    break
+                    continue
                 results.append(compare(player, banker))
-                break
+                continue
 
             else:
                 # 4 from 2, 5 from 4, 6 from 6 
@@ -115,19 +121,19 @@ def play_game(ready_cards):
                     b_extra, i = get_the_card(suffled_cards, i)
                     banker = (banker + b_extra) % 10
                     results.append(compare(player,banker))
-                    break
+                    continue
                 results.append(compare(player, banker))
-                break
+                continue
 
         elif banker <= 5:
             b_extra, i = get_the_card(suffled_cards, i)
             banker = (banker + b_extra) % 10
             results.append(compare(player,banker))
-            break
+            continue
 
         else:
             print("calculation error!")
-            break
+            continue
                 
     return results
 
@@ -135,6 +141,7 @@ def play_game(ready_cards):
 def burn_procedure(suffled_cards):
     burn_num = int(suffled_cards[0].split("_")[0])
     print(f'Burn {burn_num} of cards')
+    # print(f'total number: {len(suffled_cards[burn_num+1:])}')
     return suffled_cards[burn_num + 1:]
 
 # suffle
@@ -147,8 +154,10 @@ def suffle(cards):
     ## ready_cards = suffled_cards[:num_cards_in_one_dec - round( 10 * random())]
 
     # insert cut card
-    cut_point = num_cards_in_one_dec - round( 10 * random.random() )
+    cut_point = total_cartds - round( 10 * random.random() )
     cards.insert(cut_point, cut_card)
+    # print(f'Now, the total number of cards: {len(cards)} with cutting card')    
+    # 416 + 1 = 417
 
     return cards
 
@@ -169,8 +178,7 @@ if __name__ == "__main__":
 
     cards_list = gen_list()
     suffled_cards = suffle(cards_list)
-    ready_cards = burn_procedure(suffled_cards)
-    result = play_game(ready_cards)
+    result = play_game(suffled_cards)
 
     time_sofar = time.time() - start
     Taken_hour = time_sofar//3600
