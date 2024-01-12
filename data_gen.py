@@ -17,7 +17,6 @@ cut_card = 'cutting card'
 num_game = 1
 
 total_cartds = num_dec * num_cards_in_one_dec   # 8 * 52 = 416
-result = []
 
 # generate list
 def gen_list():
@@ -28,10 +27,10 @@ def gen_list():
             # 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K
             for k in range(4):
                 # spade, heart, dia, clova
-                if j > 10:  # J, Q, K = 10
+                if j >= 9:  # 10, J, Q, K = 10
                     card_name = "10_" + str(k) + "_" + str(i)
                 else:
-                    card_name = str(j) + "_" + str(k) + "_" + str(i)
+                    card_name = str(j+1) + "_" + str(k) + "_" + str(i)
                 # ex) 1_1_1 == 1_spade_first dec
                 cards.append(card_name)
 
@@ -189,6 +188,6 @@ if __name__ == "__main__":
     save_results(result, start)
 
     # if you want repeat generation
-    for i in range(num_game):
-        play_game(suffled_cards)
+    # for i in range(num_game):
+    #     play_game(suffled_cards)
 
