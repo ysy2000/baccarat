@@ -54,9 +54,8 @@ def get_the_card(suffled_cards, i):
     try:
         val = int(suffled_cards[i].split("_")[0])
     except:
-        print(i)
-        ## why twice?
-        print("The cut card has been scanned. Shoe will be changed after finishing this game.")
+        print(f'used {i}cards')
+        # print("The cut card has been scanned. Shoe will be changed after finishing this game.")
         val = int(suffled_cards[i+1].split("_")[0])
         i += 1
         global cut_card 
@@ -164,6 +163,7 @@ def suffle(cards):
 def save_results(result, start):
     file_name = str(start)
     df = pd.DataFrame(result)
+    df.index.name = None
     df.to_csv("./data/" + file_name, mode='w', index=False)
     return 0
 
