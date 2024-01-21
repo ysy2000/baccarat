@@ -21,7 +21,7 @@ from torch.autograd import Variable
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from Model.Model_LSTM import RNN_model
-from Dataset.dataLoader import Load
+# from Dataset.dataLoader import Load
 
 def get_date_list(types='day', start_datetime='1900-01-01', end_datetime='9999-01-01'):
     res = []
@@ -113,7 +113,7 @@ def args_setup():
     parser.add_argument('--lr', type=float, default=0.00625)
     parser.add_argument('--is_bidirectional', default=True)
     parser.add_argument('--is_dropz',type=bool,default=False)
-    parser.add_argument('--seq_length', type=int ,default=7)    # 2, 3, 4, 5, 6, 7, 8, 9
+    parser.add_argument('--seq_length', type=int ,default=5)    # 2, 3, 4, 5, 6, 7, 8, 9
     parser.add_argument('--split_rate', type=float, default=0.3)
     parser.add_argument('--model', default= 'Conv_LSTM_v3')
     parser.add_argument('--scaler', default='StandardScaler')
@@ -129,7 +129,7 @@ def main():
 
     # SetUp CUDA
     os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
-    random.seed(2022)
+    random.seed(2024)
     # Setup Redis
     root = Root(host='localhost', port=16379, db=0)
 
@@ -137,6 +137,7 @@ def main():
     df_product = None
     df = None
 
+    '''
     ## 03. Redis: Data Save and Load - cache
     if args.reset or root.product.value == None or root.inven.value == None:
 
@@ -164,7 +165,9 @@ def main():
         print("Load Data From Redis")
         df = pd.DataFrame(root.inven.value, columns=root.inven.column)
         df_product = pd.DataFrame(root.product.value, columns=root.product.column)
-
+    '''
+    print("Data Load")
+    df = pd.DataFrame('./data/1704906715.5570967')
 
     ## 04. Dataset Load and Preprocess
     new_data_set = []
